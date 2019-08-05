@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+  <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
+  <link src="/stylesheets/style.css" rel="stylesheet" />
+
+<style>
+  .header-body{
+    background-color: #09929f;
+    margin:0px;
+    padding: 20px;
+    color:#fff;
+    width: 100%;
+    height: 100%;
+    text-shadow:0 1px 1px rgba(0,0,0,0.5);
+    font-weight:500;
+    text-align:center;
+    font:bold 30px Georgia;
+  }
+</style>
+</head>
+<body >
+
+  <div>
+    <h3 class="header-body">
+        <img src=<%= title %> />
+    </h3>
+    <button  style="margin: 100px;float: left;" class="btn-danger" onclick='downloadFile("download-qrcode")'>Download</button>
+    <a id="download-qrcode"></a>
+  
+  </div>
+  <script>
+    function downloadFile(id){
+      console.log(id);
+      var linkSource = "", downloadLink = "", fileName = "";
+      var i = "", enc = "";
+      var file= '<%= title %>';
+      console.log(file);
+      i=file.indexOf(',');
+      enc =file.slice(i+1);
+      var blob = b64toBlob(enc, 'image/png', 512);    
+      var blobUrl = URL.createObjectURL(blob);
+      console.log(blobUrl);
+      linkSource = blobUrl;
+      var downloadLink = document.getElementById(id);
+      downloadLink.href = linkSource ;
+      fileName = new Date().getTime() + '.png';
+      downloadLink.download = fileName;
+      downloadLink.click();
+    }
+
+    function  b64toBlob(b64Data, contentType, sliceSize,event) {
+        contentType = contentType || '';
+        sliceSize = sliceSize || 512;
+        //var byteCharacters=Base64.decode(b64Data);
+        var byteCharacters = atob(b64Data);    
+        var byteArrays = [];
+        
+        for (var offset = 0; offset < byteCharacters.length; offset += sliceSize) {
+            var slice = byteCharacters.slice(offset, offset + sliceSize);
+    
+            var byteNumbers = new Array(slice.length);
+            for (var i = 0; i < slice.length; i++) {
+                byteNumbers[i] = slice.charCodeAt(i);
+            }
+    
+            var byteArray = new Uint8Array(byteNumbers);
+    
+            byteArrays.push(byteArray);
+        }
+    
+        var blob = new Blob(byteArrays, {type: contentType});
+        console.log(blob);
+        return blob;
+    }
+  </script>
+</body>
+</html>
